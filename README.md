@@ -1,1 +1,1 @@
-# password-cracker-minion
+# Minion Password Cracker Server
