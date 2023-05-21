@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "password-cracker-minion"
+version = "0.1.0"
+description = ""
+authors = ["TomP <tomp12@protonmail.com>"]
+readme = "README.md"
+packages = [{include = "password_cracker_minion"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
