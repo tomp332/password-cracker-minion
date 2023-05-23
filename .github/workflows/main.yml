@@ -1,4 +1,4 @@
-name: minion-password-server
+name: minion-password-src
 on:
   push:
     branches: [ main ]
