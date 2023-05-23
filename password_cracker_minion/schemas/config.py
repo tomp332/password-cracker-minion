@@ -10,7 +10,7 @@ class MinionBaseSettings(BaseSettings):
     Minion src base settings
     """
     # Framework Settings
-    master_hostname: str = Field(default='password-cracker-master', env='MASTER_HOSTNAME')
+    master_hostname: str = Field(default='localhost', env='MASTER_HOSTNAME')
     master_port: int = Field(default=5000, env='MASTER_PORT')
     minion_hostname: Optional[str] = Field(env='MINION_HOSTNAME')
     minion_host: str = Field(default='0.0.0.0', env='MINION_HOSTNAME')
