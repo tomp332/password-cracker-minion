@@ -9,7 +9,7 @@ from password_cracker_minion.src.models.responses import StartCrackTaskResponse,
 from password_cracker_minion.src.routes.tasks_router.utils import brute_force_hashed_password, send_task_result
 
 
-async def fetch_task():
+def fetch_task():
     """
     Fetch task from master server
     """
@@ -47,17 +47,17 @@ def register_minion():
     logger.info(f"Minion registered successfully, minion_id: {minion_context.minion_id}")
 
 
-async def minion_main_logic():
+def minion_main_logic():
     """
     minion_main_logic is the function that runs the main logic of the minion
     :return:
     """
     try:
-        await fetch_task()
+        fetch_task()
         while True:
-            await wait_for_task()
+            wait_for_task()
             # Received a task, starting brute force
-            plaintext_pass = await brute_force_hashed_password()
+            plaintext_pass = brute_force_hashed_password()
             # Send task result to master server
             plaintext_pass and send_task_result(
                 payload=MinionFinishTaskModel(hashed_password=minion_context.current_password_hash,
@@ -73,11 +73,11 @@ async def minion_main_logic():
             f"Failed complete main minion logic, received unknown response from master server, {validation_err}")
 
 
-async def wait_for_task():
+def wait_for_task():
     # Make sure minion has a task before starting brute force
     while minion_context.current_task_id is None:
         # await asyncio.sleep(minion_context.main_settings.waiting_interval)
-        await fetch_task()
+        fetch_task()
 
 
 async def minion_startup_tasks():
@@ -86,7 +86,7 @@ async def minion_startup_tasks():
     """
     try:
         register_minion()
-        await minion_main_logic()
+        # await minion_main_logic()
     except requests.exceptions.ConnectionError as connection_err:
         raise Exception(f"Failed to register minion, {connection_err}")
     except pydantic.error_wrappers.ValidationError as validation_err:

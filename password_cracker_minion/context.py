@@ -21,6 +21,7 @@ class MainContext:
         """
         self.main_settings: MinionBaseSettings = MinionBaseSettings()
         self.minion_id: Optional[str] = None
+        self.stop_current_task: bool = False
         self.current_crack_task_id: Optional[str] = None
         self.current_task_id: Optional[str] = None
         self.current_password_hash: str = ""

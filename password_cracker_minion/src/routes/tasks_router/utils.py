@@ -19,13 +19,18 @@ def hash_str(plain_text: str) -> str:
     return hashlib.md5(plain_text.encode()).hexdigest()
 
 
-async def brute_force_hashed_password() -> Optional[str]:
+def brute_force_hashed_password() -> Optional[str]:
     """
     Brute force the password and send response to master server
     """
     try:
         logger.debug(f"Starting brute force task, task_id: {minion_context.current_task_id}")
         for password in minion_context.current_password_lst:
+            # Check if task is cancelled
+            if minion_context.stop_current_task:
+                logger.info(f"Brute force task cancelled, task_id: {minion_context.current_task_id}")
+                return None
+            # Check if password is cracked
             if hash_str(password) == minion_context.current_password_hash:
                 logger.info(
                     f"PASSWORD CRACKED SUCCESSFULLY, {minion_context.current_password_hash}:::{password}")
