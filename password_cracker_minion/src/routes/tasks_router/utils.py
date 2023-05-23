@@ -24,7 +24,8 @@ def brute_force_hashed_password() -> Optional[str]:
     Brute force the password and send response to master server
     """
     try:
-        logger.debug(f"Starting brute force task, task_id: {minion_context.current_task_id}")
+        logger.debug(
+            f"Starting brute force task, task_id: {minion_context.current_task_id}, start_range: {minion_context.current_password_lst[0]}, end_range: {minion_context.current_password_lst[-1]}")
         for password in minion_context.current_password_lst:
             # Check if task is cancelled
             if minion_context.stop_current_task:
@@ -59,14 +60,3 @@ def send_task_result(payload: MinionFinishTaskModel):
         case _:
             logger.error(
                 f"Failed to send task result, task_id: {minion_context.current_task_id}, message: {r.status_code}")
-
-# async def launch_brute_force():
-#     """
-#     Launch brute force task
-#     :return:
-#     """
-#     if not minion_context.current_task_id:
-#         logger.error("No task id found, unable to start brute force task")
-#     else:
-#         # Append the task to all tasks
-#         await brute_force_hashed_password()
