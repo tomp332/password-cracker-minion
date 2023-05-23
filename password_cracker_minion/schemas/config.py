@@ -15,7 +15,8 @@ class MinionBaseSettings(BaseSettings):
     minion_hostname: Optional[str] = Field(env='MINION_HOSTNAME')
     minion_host: str = Field(default='0.0.0.0', env='MINION_HOSTNAME')
     minion_port: int = Field(default=5000, env='MINION_PORT')
-    minion_password_limit: int = Field(default=100, env='MINION_PASSWORD_LIMIT')
+    minion_password_limit: int = Field(default=500, env='MINION_PASSWORD_LIMIT')
+    waiting_interval: int = Field(default=5, env='WAITING_INTERVAL')
 
     @validator("minion_hostname", pre=True, always=True)
     def set_minion_hostname(cls, _):

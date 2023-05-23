@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from uvicorn.main import logger
@@ -5,7 +7,7 @@ from uvicorn.main import logger
 from password_cracker_minion import minion_context
 from password_cracker_minion.src.routes.main_router.router import api_router
 from password_cracker_minion.src.routes.tasks_router.router import tasks_router
-from password_cracker_minion.utils import minion_startup_tasks
+from password_cracker_minion.utils import minion_startup_tasks, minion_main_logic
 
 main_api_router = FastAPI(
     title="Password Cracker Minion API",

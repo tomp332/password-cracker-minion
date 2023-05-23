@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+from typing import Optional
 
 import requests
 from requests.models import Response
@@ -18,7 +19,7 @@ def hash_str(plain_text: str) -> str:
     return hashlib.md5(plain_text.encode()).hexdigest()
 
 
-async def brute_force_hashed_password():
+async def brute_force_hashed_password() -> Optional[str]:
     """
     Brute force the password and send response to master server
     """
@@ -28,25 +29,25 @@ async def brute_force_hashed_password():
             if hash_str(password) == minion_context.current_password_hash:
                 logger.info(
                     f"PASSWORD CRACKED SUCCESSFULLY, {minion_context.current_password_hash}:::{password}")
-                send_task_result(plaintext_password=password)
                 # Reset current task id
-                minion_context.current_task_id = None
-                logger.info(f"Task completed, task_id: {minion_context.current_task_id}")
+                logger.info(f"Brute force completed, task_id: {minion_context.current_task_id}")
+                return password
     except asyncio.CancelledError:
         logger.info("Brute force task cancelled by master server")
+    except Exception as e:
+        logger.error(f"Failed to brute force password, task_id: {minion_context.current_task_id}, error: {e}")
 
 
-def send_task_result(plaintext_password: str):
+def send_task_result(payload: MinionFinishTaskModel):
     """
     Send task result to master server
     """
     # Send task completion to master server
+    logger.debug(f"Sending task result to master server, task_id: {minion_context.current_task_id}")
     r: Response = requests.post(
         f"http://{minion_context.main_settings.master_hostname}:{minion_context.main_settings.master_port}/"
-        f"api/minion/cracked",
-        json=MinionFinishTaskModel(hashed_password=minion_context.current_password_hash,
-                                   task_id=minion_context.current_task_id,
-                                   password_plaintext=plaintext_password))
+        f"api/minion/finished",
+        json=payload.dict())
     match r.status_code:
         case 200:
             logger.info(f"Task result sent successfully, task_id: {minion_context.current_task_id}")
@@ -54,14 +55,13 @@ def send_task_result(plaintext_password: str):
             logger.error(
                 f"Failed to send task result, task_id: {minion_context.current_task_id}, message: {r.status_code}")
 
-
-async def launch_brute_force():
-    """
-    Launch brute force task
-    :return:
-    """
-    if not minion_context.current_task_id:
-        logger.error("No task id found, unable to start brute force task")
-    else:
-        # Append the task to all tasks
-        minion_context.brute_force_tasks.append(asyncio.create_task(brute_force_hashed_password()))
+# async def launch_brute_force():
+#     """
+#     Launch brute force task
+#     :return:
+#     """
+#     if not minion_context.current_task_id:
+#         logger.error("No task id found, unable to start brute force task")
+#     else:
+#         # Append the task to all tasks
+#         await brute_force_hashed_password()
