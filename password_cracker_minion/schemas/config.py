@@ -14,7 +14,7 @@ class MinionBaseSettings(BaseSettings):
     master_port: int = Field(default=5000, env='MASTER_PORT')
     minion_hostname: Optional[str] = Field(env='MINION_HOSTNAME')
     minion_host: str = Field(default='0.0.0.0', env='MINION_HOSTNAME')
-    minion_port: int = Field(default=5000, env='MINION_PORT')
+    minion_port: int = Field(default=5001, env='MINION_PORT')
     minion_password_limit: int = Field(default=500, env='MINION_PASSWORD_LIMIT')
     waiting_interval: int = Field(default=5, env='WAITING_INTERVAL')
 
