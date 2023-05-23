@@ -1,3 +1,5 @@
+import time
+
 import pydantic
 import requests
 from requests.models import Response
@@ -76,8 +78,10 @@ def minion_main_logic():
 def wait_for_task():
     # Make sure minion has a task before starting brute force
     while minion_context.current_task_id is None:
-        # await asyncio.sleep(minion_context.main_settings.waiting_interval)
         fetch_task()
+        # If minion still doesn't have a task, wait for a bit
+        if minion_context.current_task_id is None:
+            time.sleep(minion_context.main_settings.waiting_interval)
 
 
 async def minion_startup_tasks():

@@ -29,6 +29,7 @@ main_api_router.add_middleware(
 async def on_startup() -> None:
     logger.info(f"Started minion server {minion_context.main_settings.minion_hostname}")
     await minion_startup_tasks()
+    # Have to run this in a thread since the startup event is blocking
     threading.Thread(target=minion_main_logic).start()
 
 
