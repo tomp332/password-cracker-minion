@@ -1,5 +1,6 @@
 import random
 import string
+from typing import Optional
 
 from pydantic import BaseSettings, Field, validator
 
@@ -11,17 +12,16 @@ class MinionBaseSettings(BaseSettings):
     # Framework Settings
     master_hostname: str = Field(default='password-cracker-master', env='MASTER_HOSTNAME')
     master_port: int = Field(default=5000, env='MASTER_PORT')
-    minion_hostname: str = Field(env='MINION_HOSTNAME')
+    minion_hostname: Optional[str] = Field(env='MINION_HOSTNAME')
     minion_host: str = Field(default='0.0.0.0', env='MINION_HOSTNAME')
     minion_port: int = Field(default=5000, env='MINION_PORT')
 
     @validator("minion_hostname", pre=True, always=True)
-    def set_minion_hostname(cls, v):
+    def set_minion_hostname(cls, _):
         """
         set_minion_hostname is the function that sets the minion hostname
-        :param v:
-        :return:
+        :return: minion_hostname
         """
         # Generate 5 digit random number
         characters = string.ascii_letters + string.digits
-        return f'{v}-'.join(random.choice(characters) for _ in range(5))
+        return f"minion-server-{''.join(random.choice(characters) for _ in range(6))}"
