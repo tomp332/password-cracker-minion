@@ -27,7 +27,7 @@ main_api_router.add_middleware(
 @main_api_router.on_event("startup")
 async def on_startup() -> None:
     logger.info(f"Started minion server {minion_context.main_settings.minion_hostname}")
-    minion_startup_tasks()
+    await minion_startup_tasks()
 
 
 # include routes
